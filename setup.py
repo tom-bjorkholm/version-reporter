@@ -12,7 +12,7 @@ setup(
   python_requires='>=3.12',
   packages=['versionreporter'],
   package_dir={'versionreporter': 'src/versionreporter'},
-  package_data={'versionreporter': ['src/py.typed']},
+  package_data={'versionreporter': ['py.typed']},
   install_requires=[  # pylint: disable=duplicate-code
     'pip >= 26.0.1',
     'setuptools >= 82.0.1',
