@@ -20,4 +20,4 @@ classifiers = [
 dynamic = ["dependencies"]
 
 [project.urls]
-"Source code" = "https://bitbucket.org/tom-bjorkholm/table-io"
+"Source code" = "https://bitbucket.org/tom-bjorkholm/version-reporter"

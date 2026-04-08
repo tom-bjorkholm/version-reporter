@@ -21,7 +21,7 @@ type SupportExpires = dict[date, str]
 
 
 class _AvailableVersion(NamedTuple):
-    """Information on vailable versions of a package."""
+    """Information on available versions of a package."""
 
     is_better_for_pyver: bool
     is_best_for_new_py: bool
@@ -42,9 +42,9 @@ class VersionReporter():
     the availability of newer versions of the listed packages.
 
     The application that uses this class shall create a derived class
-    and override the methods: `module_names`, `get_app_support_expires`
-    `get_recommended_python_version` and `get_main_module_name`
-    to specify the modules that the application uses, the dates when
+    and override the methods: `package_names`, `get_app_support_expires`
+    `get_recommended_python_version` and `get_main_package_name`
+    to specify the packages that the application uses, the dates when
     the application will no longer be supported on a given Python
     version, and the recommended Python version for the application.
 
@@ -58,7 +58,7 @@ class VersionReporter():
     """
 
     def __init__(self) -> None:
-        """Create version reporter object."""
+        """Create a version reporter object."""
         self.versions: Optional[VersionInfo] = None
 
     def print(self, versions: Optional[VersionInfo] = None) -> None:
@@ -94,7 +94,7 @@ class VersionReporter():
             self._print_upgrade_instruction(versions=versions)
 
     def check_if_unsupported_python(self) -> None:
-        """Check if Python version is no longer supported by app.
+        """Check if the Python version is no longer supported by the app.
 
         This method checks if the running Python version is no longer supported
         by the application and prints an appropriate message to the user.
@@ -121,7 +121,7 @@ class VersionReporter():
 
     @classmethod
     def _print_upgrade_instruction(cls, versions: VersionInfo) -> None:
-        """Print instructions for how to upgrade Python and app.
+        """Print instructions for how to upgrade Python and the app.
 
         Print instructions for how to upgrade Python and the application
         to a newer version. This method is called internally by the
@@ -133,7 +133,7 @@ class VersionReporter():
 
         """
         pip = 'pip3'
-        applic = list(versions.keys())[0].replace('_', '-')
+        application_package = list(versions.keys())[0].replace('_', '-')
         if sys.platform.lower().startswith('win') \
                 or sys.platform.lower().startswith('nt'):
             pip = 'pip'
@@ -141,45 +141,45 @@ class VersionReporter():
         txt += 'Upgrade Python to a new version.\n'
         txt += '(Download Python from https://www.python.org/downloads/ )\n'
         txt += 'After installing new Python, upgrade application with\n'
-        txt += pip + f' install --upgrade {cls.get_main_module_name()}\n'
-        if applic != cls.get_main_module_name():
-            txt += pip + ' install --upgrade ' + applic + '\n'
+        txt += pip + f' install --upgrade {cls.get_main_package_name()}\n'
+        if application_package != cls.get_main_package_name():
+            txt += pip + ' install --upgrade ' + application_package + '\n'
         txt += '\n'
         print(txt)
 
     @staticmethod
     def _python_version() -> Version:
-        """Get running python version."""
+        """Get the running Python version."""
         py_ver = '.'.join([str(s) for s in sys.version_info[0:3]])
         return Version(py_ver)
 
     def _get(self) -> VersionInfo:
-        """Get version information for module and dependencies."""
+        """Get version information for the package and dependencies."""
         if self.versions is not None:
             return self.versions
         versions: VersionInfo = {i: Version(metadata_version(i))
-                                 for i in self.module_names()}
+                                 for i in self.package_names()}
         versions['Python'] = self._python_version()
         self.versions = versions
         return versions
 
-    def module_names(self) -> list[str]:
-        """Get list of modules to get versions for.
+    def package_names(self) -> list[str]:
+        """Get the list of packages to get versions for.
 
         Derived classes must override this method to specify what are
-        the names of the modules to get versions for in their context
+        the names of the packages to get versions for in their context
         (usually in their application). The default value is
         ['versionreporter', 'packaging', 'pypi-simple'],
         which is OK for testing this package, but does not make sense for a
         real application.
 
         Returns:
-            list[str]: List of module names.
+            list[str]: List of package names.
         """
         return ['versionreporter', 'packaging', 'pypi-simple']
 
     def get_app_support_expires(self) -> SupportExpires:
-        """Get which python version is no loger supported at date.
+        """Get which Python version is no longer supported at a date.
 
         Derived classes should override this method to specify what are
         the dates when the application will no longer be supported on
@@ -199,7 +199,7 @@ class VersionReporter():
         return support_end
 
     def _today(self) -> date:
-        """Get date of today."""
+        """Get today's date."""
         # Mockable to enable easy testing.
         return date.today()
 
@@ -207,21 +207,21 @@ class VersionReporter():
     def _get_available_version(pkgname: str,
                                pkgversion: Version,
                                python_version: Version) -> _AvailableVersion:
-        """Get information on available version in PyPi.
+        """Get information on available versions in PyPI.
 
-        Get information on available version in PyPi. This method is called
+        Get information on available versions in PyPI. This method is called
         internally by the `_get_available_versions` method to get information
-        on available versions of a package in PyPi.
+        on available versions of a package in PyPI.
 
         Args:
-            pkgname: Name of package to get information on.
-            pkgversion: Currently used version of package. This is used to
+            pkgname: Name of the package to get information on.
+            pkgversion: Currently used version of the package. This is used to
                         check if a newer version is available compared to the
                         currently used version.
             python_version: Python version currently used by the application.
 
         Returns:
-            _AvailableVersion: Information on available version of package.
+            _AvailableVersion: Information on available versions of a package.
         """
         bestver = Version('0.0.1')
         betterver = Version('0.0.1')
@@ -254,11 +254,11 @@ class VersionReporter():
 
     @staticmethod
     def _get_available_versions(versions: VersionInfo) -> _AvailableVersions:
-        """Get information on available versions in PyPi.
+        """Get information on available versions in PyPI.
 
-        Get information on available versions in PyPi. This method is called
+        Get information on available versions in PyPI. This method is called
         internally by the `_print_info_on_new_pkgs` method to get information
-        on available versions of the packages in PyPi.
+        on available versions of the packages in PyPI.
 
         Args:
             versions: Version information about currently installed versions
@@ -307,12 +307,12 @@ class VersionReporter():
         maxlen: int = max(list(len(x.pkgname)
                                for x in better_for_this + better_with_new_py))
         if better_for_this:
-            print('Upgraded packages are available for this python version:')
+            print('Upgraded packages are available for this Python version:')
             for item in better_for_this:
                 pad = '.'*(maxlen - len(item.pkgname))
                 print(f'{item.pkgname} {pad} {str(item.better_ver)}')
         if better_with_new_py:
-            print('Even newer packages are available if upgrading python:')
+            print('Even newer packages are available if upgrading Python:')
             for item in better_with_new_py:
                 pad = '.'*(maxlen - len(item.pkgname))
                 print(f'{item.pkgname} {pad} {str(item.best_ver)}')
@@ -338,17 +338,17 @@ class VersionReporter():
         self._print_if_better_versions(self._get_available_versions(versions))
 
     @classmethod
-    def get_main_module_name(cls) -> str:
-        """Get name of main module.
+    def get_main_package_name(cls) -> str:
+        """Get the name of the main package.
 
         Derived classes should override this method to specify what is
-        the name of the main module in their context (usually in their
+        the name of the main package in their context (usually in their
         application). The default value is 'versionreporter', which is
         OK for testing this package, but does not make sense for a real
         application.
 
         Returns:
-            str: Name of main module (the pypi project name).
+            str: Name of the main package (the PyPI project name).
         """
         return 'versionreporter'
 

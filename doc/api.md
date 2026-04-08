@@ -5,9 +5,9 @@
     * [\_\_init\_\_](#versionreporter.versionreporter.VersionReporter.__init__)
     * [print](#versionreporter.versionreporter.VersionReporter.print)
     * [check\_if\_unsupported\_python](#versionreporter.versionreporter.VersionReporter.check_if_unsupported_python)
-    * [module\_names](#versionreporter.versionreporter.VersionReporter.module_names)
+    * [package\_names](#versionreporter.versionreporter.VersionReporter.package_names)
     * [get\_app\_support\_expires](#versionreporter.versionreporter.VersionReporter.get_app_support_expires)
-    * [get\_main\_module\_name](#versionreporter.versionreporter.VersionReporter.get_main_module_name)
+    * [get\_main\_package\_name](#versionreporter.versionreporter.VersionReporter.get_main_package_name)
     * [get\_recommended\_python\_version](#versionreporter.versionreporter.VersionReporter.get_recommended_python_version)
 
 <a id="versionreporter.versionreporter"></a>
@@ -32,9 +32,9 @@ the application uses. The report also includes information about
 the availability of newer versions of the listed packages.
 
 The application that uses this class shall create a derived class
-and override the methods: `module_names`, `get_app_support_expires`
-`get_recommended_python_version` and `get_main_module_name`
-to specify the modules that the application uses, the dates when
+and override the methods: `package_names`, `get_app_support_expires`
+`get_recommended_python_version` and `get_main_package_name`
+to specify the packages that the application uses, the dates when
 the application will no longer be supported on a given Python
 version, and the recommended Python version for the application.
 
@@ -54,7 +54,7 @@ an appropriate message to the user.
 def __init__() -> None
 ```
 
-Create version reporter object.
+Create a version reporter object.
 
 <a id="versionreporter.versionreporter.VersionReporter.print"></a>
 
@@ -91,25 +91,25 @@ Python version, information about these is also printed.
 def check_if_unsupported_python() -> None
 ```
 
-Check if Python version is no longer supported by app.
+Check if the Python version is no longer supported by the app.
 
 This method checks if the running Python version is no longer supported
 by the application and prints an appropriate message to the user.
 The most common usage of this method is to call it early in the
 application program flow.
 
-<a id="versionreporter.versionreporter.VersionReporter.module_names"></a>
+<a id="versionreporter.versionreporter.VersionReporter.package_names"></a>
 
-#### module\_names
+#### package\_names
 
 ```python
-def module_names() -> list[str]
+def package_names() -> list[str]
 ```
 
-Get list of modules to get versions for.
+Get the list of packages to get versions for.
 
 Derived classes must override this method to specify what are
-the names of the modules to get versions for in their context
+the names of the packages to get versions for in their context
 (usually in their application). The default value is
 ['versionreporter', 'packaging', 'pypi-simple'],
 which is OK for testing this package, but does not make sense for a
@@ -117,7 +117,7 @@ real application.
 
 **Returns**:
 
-- `list[str]` - List of module names.
+- `list[str]` - List of package names.
 
 <a id="versionreporter.versionreporter.VersionReporter.get_app_support_expires"></a>
 
@@ -127,7 +127,7 @@ real application.
 def get_app_support_expires() -> SupportExpires
 ```
 
-Get which python version is no loger supported at date.
+Get which Python version is no longer supported at a date.
 
 Derived classes should override this method to specify what are
 the dates when the application will no longer be supported on
@@ -142,26 +142,26 @@ the real application.
   that are no longer supported at that date
   by the application.
 
-<a id="versionreporter.versionreporter.VersionReporter.get_main_module_name"></a>
+<a id="versionreporter.versionreporter.VersionReporter.get_main_package_name"></a>
 
-#### get\_main\_module\_name
+#### get\_main\_package\_name
 
 ```python
 @classmethod
-def get_main_module_name(cls) -> str
+def get_main_package_name(cls) -> str
 ```
 
-Get name of main module.
+Get the name of the main package.
 
 Derived classes should override this method to specify what is
-the name of the main module in their context (usually in their
+the name of the main package in their context (usually in their
 application). The default value is 'versionreporter', which is
 OK for testing this package, but does not make sense for a real
 application.
 
 **Returns**:
 
-- `str` - Name of main module (the pypi project name).
+- `str` - Name of the main package (the PyPI project name).
 
 <a id="versionreporter.versionreporter.VersionReporter.get_recommended_python_version"></a>
 

@@ -88,9 +88,9 @@ def test_version_get1(monkeypatch: pytest.MonkeyPatch,
     """Test VersionReporter.get with patched getters."""
     metaversnum = 0
 
-    def metavers(modulename: str) -> str:
+    def metavers(package_name: str) -> str:
         """Patched metadata.version."""
-        assert modulename is not None
+        assert package_name is not None
         nonlocal metaversnum
         ret = vers[metaversnum]
         metaversnum += 1
@@ -101,12 +101,12 @@ def test_version_get1(monkeypatch: pytest.MonkeyPatch,
     monkeypatch.setattr(mod + 'metadata_version', metavers)
     versionobj = VersionReporter()
     ret = versionobj._get()  # pylint: disable=protected-access
-    mods = versionobj.module_names()
+    package_names = versionobj.package_names()
     out, err = capsys.readouterr()
     assert '' == err
     assert '' == out
-    for i, mod in enumerate(mods):
-        assert Version(vers[i]) == ret[mod]
+    for i, package_name in enumerate(package_names):
+        assert Version(vers[i]) == ret[package_name]
 
 
 @pytest.mark.parametrize('numcalls', [0, 1, 2, 17])
@@ -116,9 +116,9 @@ def test_version_get2(monkeypatch: pytest.MonkeyPatch,
     """Test VersionReporter.get with patched getters."""
     calls = 0
 
-    def metavers(modulename: str) -> str:
+    def metavers(package_name: str) -> str:
         """Patched metadata.version."""
-        assert modulename is not None
+        assert package_name is not None
         nonlocal calls
         calls += 1
         return '1.8.2'
@@ -128,12 +128,12 @@ def test_version_get2(monkeypatch: pytest.MonkeyPatch,
     versionobj = VersionReporter()
     for _ in range(numcalls):
         ret = versionobj._get()  # pylint: disable=protected-access
-        mods = versionobj.module_names()
-        for mod in mods:
-            assert ret[mod] == Version('1.8.2')
+        package_names = versionobj.package_names()
+        for package_name in package_names:
+            assert ret[package_name] == Version('1.8.2')
         # pylint: disable=protected-access
         assert VersionReporter._python_version() == ret['Python']
-        assert len(mods) == calls
+        assert len(package_names) == calls
     if 0 == numcalls:
         assert 0 == calls
     out, err = capsys.readouterr()
@@ -190,7 +190,7 @@ def test_version_check_if_u(capsys: pytest.CaptureFixture[str],
                             monkeypatch: pytest.MonkeyPatch,
                             ver: tuple[int, int, int, int, int],
                             dat: date, errprint: bool) -> None:
-    """Test version check if unsupported python widh old Python."""
+    """Test version check if unsupported Python with old Python."""
     mod = 'versionreporter.versionreporter.sys.version_info'
     monkeypatch.setattr(mod, ver)
 
@@ -369,7 +369,7 @@ def test_get_avail_version(capsys: pytest.CaptureFixture[str],  # pylint: disabl
 def mock_get_available_version(pkgname: str,
                                pkgversion: Version,
                                python_version: Version) -> _AvailableVersion:
-    """Get information on available version in PyPi."""
+    """Get information on available versions in PyPI."""
     assert pkgversion is not None
     assert python_version is not None
     for ans in mock_get_available_version_answers:
@@ -474,9 +474,9 @@ PBAVAIL2: _AvailableVersions = [
                       is_better_for_pyver=False,
                       best_ver=Version('10.0'), better_ver=Version('1.0'))
 ]
-PBTXT2 = '''Upgraded packages are available for this python version:
+PBTXT2 = '''Upgraded packages are available for this Python version:
 abc ........ 2.0
-Even newer packages are available if upgrading python:
+Even newer packages are available if upgrading Python:
 longer_name  10.0
 '''
 PBAVAIL3: _AvailableVersions = [
@@ -487,10 +487,10 @@ PBAVAIL3: _AvailableVersions = [
                       is_better_for_pyver=True,
                       best_ver=Version('10.0'), better_ver=Version('1.0'))
 ]
-PBTXT3 = '''Upgraded packages are available for this python version:
+PBTXT3 = '''Upgraded packages are available for this Python version:
 abc ........ 2.0
 longer_name  1.0
-Even newer packages are available if upgrading python:
+Even newer packages are available if upgrading Python:
 abc ........ 2.1
 longer_name  10.0
 '''
@@ -585,10 +585,10 @@ def test_print_info_on_new_2(capsys: pytest.CaptureFixture[str],
     vers._print_info_on_new_pkgs()  # pylint: disable=protected-access
     out, err = capsys.readouterr()
     assert '' == err
-    txt = '''Upgraded packages are available for this python version:
+    txt = '''Upgraded packages are available for this Python version:
 versionreporter  15.1
 pypi-simple .... 13.1
-Even newer packages are available if upgrading python:
+Even newer packages are available if upgrading Python:
 versionreporter  15.2
 pypi-simple .... 13.2
 '''

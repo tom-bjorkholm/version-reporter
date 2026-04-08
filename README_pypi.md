@@ -5,7 +5,7 @@
 The `versionreporter` package provides a very easy way to:
 
 - report the currently used versions of the main packages used in an
-  application including the application package.
+  application, including the application package.
 
 - report if there are newer versions available of any of the main packages
   for use on the currently running Python version.
@@ -13,11 +13,11 @@ The `versionreporter` package provides a very easy way to:
 - report if there are newer versions available of any of the main packages
   for use on a newer Python version than the one currently running.
 
-- report when the developer of the main application package no longer will
+- report when the developer of the main application package will no longer
   provide newer releases for the currently running Python version.
 
 How this is used in an application is naturally up to the application designer.
-One common way is to invoke the versionreporter when a `--version` flag is
+One common way is to invoke `versionreporter` when a `--version` flag is
 entered on the command line of the application.
 
 ## Installing versionreporter
@@ -47,8 +47,8 @@ You can find the public API documentation at [https://bitbucket.org/tom-bjorkhol
 
 You can find the protected API documentation at [https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/doc/protected_api.md](https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/doc/protected_api.md)
 
-Even though the API documentation exists, most users and programmers probably get
-a better start by reading the examples.
+Even though the API documentation exists, most users and programmers probably
+get a better start by reading the examples.
 
 ## Version history
 
@@ -58,7 +58,7 @@ a better start by reading the examples.
 
 ## Test summary
 
-- Test result: 187 passed in 9s
+- Test result: 187 passed in 12s
 - No flake8 warnings.
 - No mypy errors found.
 - Built version(s): 0.0.1
