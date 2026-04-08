@@ -1,4 +1,4 @@
 [MAIN]
 
 persistent = no
-
+init-hook = import sys; sys.path.insert(0, 'example/src')

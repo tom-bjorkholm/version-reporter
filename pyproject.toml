@@ -21,3 +21,13 @@ dynamic = ["dependencies"]
 
 [project.urls]
 "Source code" = "https://bitbucket.org/tom-bjorkholm/version-reporter"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "example/src",
+]
+
+[tool.mypy]
+mypy_path = [
+  "example/src",
+]
