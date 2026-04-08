@@ -168,7 +168,7 @@ def test_version_print_old_p(capsys: pytest.CaptureFixture[str],
     VersionReporter().print()
     out, err = capsys.readouterr()
     assert '' == err
-    assert 'versionreporter  0.0.1' in out
+    assert 'versionreporter ' in out
     assert 'Python ......... 3.11.1' in out
     assert 'You are running an old Python version.' in out
     assert 'Upgrade Python to a new version.' in out

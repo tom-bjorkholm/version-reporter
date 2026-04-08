@@ -54,12 +54,12 @@ get a better start by reading the examples.
 
 | Version | Date        | Python version | Comment                     |
 |---------|-------------|----------------|-----------------------------|
-| 0.1     | 2026 ?      | 3.12 or newer  | First released version      |
+| 0.1     | 2026 Apr 08 | 3.12 or newer  | First released version      |
 
 ## Test summary
 
-- Test result: 197 passed in 14s
+- Test result: 197 passed in 9s
 - No flake8 warnings.
 - No mypy errors found.
-- Built version(s): 0.0.1
+- Built version(s): 0.1
 - Build and test using Python 3.14.3
