@@ -6,7 +6,7 @@ loaders:
       - ./../src
     # Packages (directories with __init__.py) to document
     packages:
-      - tableio
+      - versionreporter
 
 processors:
   - type: filter
