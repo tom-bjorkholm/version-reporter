@@ -58,7 +58,7 @@ get a better start by reading the examples.
 
 ## Test summary
 
-- Test result: 187 passed in 12s
+- Test result: 187 passed in 9s
 - No flake8 warnings.
 - No mypy errors found.
 - Built version(s): 0.0.1

@@ -127,20 +127,18 @@ real application.
 def get_app_support_expires() -> SupportExpires
 ```
 
-Get which Python version is no longer supported at a date.
+Get the Python-version support cutoffs for the application.
 
-Derived classes should override this method to specify what are
-the dates when the application will no longer be supported on
-a given Python version.
-The default value is a dictionary with the dates and Python versions
-that are OK for testing this package, but may not make sense for
-the real application.
+Derived classes should override this method to return a mapping from
+support-end dates to the highest Python major.minor version that
+becomes unsupported on that date. When today's date is on or after
+a listed date, the application treats Python versions up to and
+including the mapped version as unsupported.
 
 **Returns**:
 
-  dict[date, str]: Dictionary with dates and Python versions
-  that are no longer supported at that date
-  by the application.
+  dict[date, str]: Mapping from support-end dates to the highest
+  unsupported Python major.minor version.
 
 <a id="versionreporter.versionreporter.VersionReporter.get_main_package_name"></a>
 
