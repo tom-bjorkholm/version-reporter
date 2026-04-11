@@ -1,4 +1,4 @@
-# tableio
+# version-reporter
 
 > **👤 Looking to use this in your program**  
 > This repository is for developers of the package. If you want to install
@@ -30,7 +30,7 @@ entered on the command line of the application.
 
 ### Cloning
 
-The tableio repo uses submodules. To clone it use the command:
+The version-reporter repo uses submodules. To clone it use the command:
 
 ````sh
 git clone --recurse-submodules git@bitbucket.org:tom-bjorkholm/version-reporter.git
