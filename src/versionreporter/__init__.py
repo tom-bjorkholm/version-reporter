@@ -5,6 +5,6 @@
 # MIT License
 
 
-from .versionreporter import VersionReporter
+from .versionreporter import VersionReporter, VersionInfo, SupportExpires
 
-__all__ = ['VersionReporter']
+__all__ = ['VersionReporter', 'VersionInfo', 'SupportExpires']

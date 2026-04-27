@@ -12,7 +12,7 @@ from typing import Optional
 
 from packaging.version import Version
 
-from versionreporter import VersionReporter
+from versionreporter import VersionReporter, SupportExpires
 
 
 class SupportAwareHelloVersionReporter(VersionReporter):
@@ -30,7 +30,7 @@ class SupportAwareHelloVersionReporter(VersionReporter):
         # releases on PyPI when the package names are real PyPI project names.
         return ['requests', 'versionreporter', 'packaging']
 
-    def get_app_support_expires(self) -> dict[date, str]:
+    def get_app_support_expires(self) -> SupportExpires:
         """Return when this example would stop supporting older Python."""
         return {date(year=2027, month=6, day=1): '3.12',
                 date(year=2028, month=6, day=1): '3.13'}
