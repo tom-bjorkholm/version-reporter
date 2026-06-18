@@ -8,6 +8,7 @@
     * [package\_names](#versionreporter.versionreporter.VersionReporter.package_names)
     * [get\_app\_support\_expires](#versionreporter.versionreporter.VersionReporter.get_app_support_expires)
     * [get\_main\_package\_name](#versionreporter.versionreporter.VersionReporter.get_main_package_name)
+    * [recommended\_python](#versionreporter.versionreporter.VersionReporter.recommended_python)
     * [get\_recommended\_python\_version](#versionreporter.versionreporter.VersionReporter.get_recommended_python_version)
 
 <a id="versionreporter.versionreporter"></a>
@@ -32,8 +33,8 @@ the application uses. The report also includes information about
 the availability of newer versions of the listed packages.
 
 The application that uses this class shall create a derived class
-and override the methods: `package_names`, `get_app_support_expires`
-`get_recommended_python_version` and `get_main_package_name`
+and override the methods: `package_names`, `get_app_support_expires`,
+`recommended_python` and `get_main_package_name`
 to specify the packages that the application uses, the dates when
 the application will no longer be supported on a given Python
 version, and the recommended Python version for the application.
@@ -61,7 +62,8 @@ Create a version reporter object.
 #### print
 
 ```python
-def print(versions: Optional[VersionInfo] = None) -> None
+def print(versions: Optional[VersionInfo] = None,
+          out_file: Optional[TextIO] = None) -> None
 ```
 
 Print version information.
@@ -82,13 +84,17 @@ Python version, information about these is also printed.
 - `versions` - Optional version information to print. If None,
   the version information is obtained from the
   `_get` method.
+- `out_file` - Stream to print to. Defaults to sys.stdout when None,
+  so unchanged client code keeps printing to stdout.
+  Pass a writable stream (such as io.StringIO) to
+  capture the output, for example in a GUI client.
 
 <a id="versionreporter.versionreporter.VersionReporter.check_if_unsupported_python"></a>
 
 #### check\_if\_unsupported\_python
 
 ```python
-def check_if_unsupported_python() -> None
+def check_if_unsupported_python(out_file: Optional[TextIO] = None) -> None
 ```
 
 Check if the Python version is no longer supported by the app.
@@ -97,6 +103,12 @@ This method checks if the running Python version is no longer supported
 by the application and prints an appropriate message to the user.
 The most common usage of this method is to call it early in the
 application program flow.
+
+**Arguments**:
+
+- `out_file` - Stream to print to. Defaults to sys.stdout when None.
+  Pass a writable stream (such as io.StringIO) to
+  capture the output, for example in a GUI client.
 
 <a id="versionreporter.versionreporter.VersionReporter.package_names"></a>
 
@@ -161,6 +173,29 @@ application.
 
 - `str` - Name of the main package (the PyPI project name).
 
+<a id="versionreporter.versionreporter.VersionReporter.recommended_python"></a>
+
+#### recommended\_python
+
+```python
+@classmethod
+def recommended_python(cls) -> Version
+```
+
+Get recommended Python version.
+
+Derived classes should override this method to specify what is
+the recommended Python version for the application. The default
+value is Version('3.14'), which is OK for testing this package,
+but may not make sense for the real application.
+
+This method replaces the longer, now deprecated, method
+`get_recommended_python_version`.
+
+**Returns**:
+
+- `Version` - Recommended Python version.
+
 <a id="versionreporter.versionreporter.VersionReporter.get_recommended_python_version"></a>
 
 #### get\_recommended\_python\_version
@@ -170,12 +205,14 @@ application.
 def get_recommended_python_version(cls) -> Version
 ```
 
-Get recommended Python version.
+Get recommended Python version (deprecated).
 
-Derived classes should override this method to specify what is
-the recommended Python version for the application. The default
-value is Version('3.13'), which is OK for testing this package,
-but may not make sense for the real application.
+.. deprecated::
+Use `recommended_python` instead. This method is kept only for
+backward compatibility. Calling it emits a DeprecationWarning.
+Derived classes that still override this method keep working
+(their value is used and a DeprecationWarning is emitted), but
+they should switch to overriding `recommended_python`.
 
 **Returns**:
 

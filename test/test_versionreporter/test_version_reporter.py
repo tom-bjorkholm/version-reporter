@@ -5,9 +5,11 @@
 # MIT License
 
 
+import warnings
+from io import StringIO
 from datetime import date
 from copy import deepcopy
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, TextIO
 from packaging.version import Version
 from pypi_simple import ProjectPage, DistributionPackage, \
     NoSuchProjectError
@@ -149,11 +151,11 @@ def test_version_get2(monkeypatch: pytest.MonkeyPatch,
 def test_print_upgrade(capsys: pytest.CaptureFixture[str],
                        monkeypatch: pytest.MonkeyPatch, operatingsys: str,
                        pip: str) -> None:
-    """Test _print_upgrade_instructions."""
+    """Test _print_upgrade_info."""
     mod = 'versionreporter.versionreporter.sys.platform'
     monkeypatch.setattr(mod, operatingsys)
     versioninfo: VersionInfo = {'aha': Version('0.1')}
-    VersionReporter()._print_upgrade_instruction(versioninfo)  # pylint: disable=protected-access # noqa: E501
+    VersionReporter()._print_upgrade_info(versioninfo)  # pylint: disable=protected-access # noqa: E501
     out, err = capsys.readouterr()
     assert '' == err
     assert pip + ' install --upgrade aha' in out
@@ -524,9 +526,11 @@ def test_print_info_on_new_1(capsys: pytest.CaptureFixture[str],
                                   best_ver=Version('1.0'),
                                   better_ver=Version('1.0'))]
 
-    def mock_print_if_better(_: object, vers: _AvailableVersions) -> None:
+    def mock_print_if_better(_: object, vers: _AvailableVersions,
+                             out_file: Optional[TextIO] = None) -> None:
         """Mock VersionReporter.print_if_better_versions."""
         nonlocal print_if_better_num
+        assert out_file is None
         print_if_better_num += 1
         assert len(vers) == 1
         assert isinstance(vers[0], _AvailableVersion)
@@ -587,3 +591,167 @@ versionreporter  15.2
 pypi-simple .... 13.2
 '''
     assert txt == out
+
+
+class NewRecReporter(VersionReporter):
+    """Reporter overriding the new recommended_python method."""
+
+    @classmethod
+    def recommended_python(cls) -> Version:
+        """Return the recommended Python version for the test."""
+        return Version('3.99')
+
+
+class OldRecReporter(VersionReporter):
+    """Reporter overriding the deprecated recommended-version method."""
+
+    @classmethod
+    def get_recommended_python_version(cls) -> Version:
+        """Return the recommended Python version for the test."""
+        return Version('3.88')
+
+
+def _skip_new_pkgs(_: object, versions: Optional[VersionInfo] = None,
+                   out_file: Optional[TextIO] = None) -> None:
+    """Mock _print_info_on_new_pkgs to skip the PyPI lookup."""
+    assert versions is not None
+    assert out_file is not None
+
+
+def test_recommended_python() -> None:
+    """Test the default recommended_python returns Version('3.13')."""
+    with warnings.catch_warnings():
+        warnings.simplefilter('error', DeprecationWarning)
+        assert VersionReporter.recommended_python() == Version('3.14')
+
+
+@pytest.mark.parametrize('reporter_cls, expected',
+                         [(VersionReporter, '3.14'),
+                          (NewRecReporter, '3.99')])
+def test_rec_py_resolver(reporter_cls: type[VersionReporter],
+                         expected: str) -> None:
+    """Test _rec_python resolves the value without deprecation warning."""
+    with warnings.catch_warnings():
+        warnings.simplefilter('error', DeprecationWarning)
+        result = reporter_cls._rec_python()  # pylint: disable=protected-access
+    assert result == Version(expected)
+
+
+def test_old_override_warns() -> None:
+    """Test _rec_python honors a deprecated override and warns."""
+    rep = OldRecReporter
+    with pytest.warns(DeprecationWarning):
+        result = rep._rec_python()  # pylint: disable=protected-access
+    assert result == Version('3.88')
+
+
+def test_deprecated_direct() -> None:
+    """Test the deprecated method warns and delegates to the new one."""
+    with pytest.warns(DeprecationWarning):
+        result = VersionReporter.get_recommended_python_version()
+    assert result == Version('3.14')
+
+
+@pytest.mark.parametrize('reporter_cls, use_old',
+                         [(NewRecReporter, False),
+                          (OldRecReporter, True)])
+def test_print_rec_python(capsys: pytest.CaptureFixture[str],
+                          monkeypatch: pytest.MonkeyPatch,
+                          reporter_cls: type[VersionReporter],
+                          use_old: bool) -> None:
+    """Test print() resolves recommended Python via new and old methods."""
+    mod = 'versionreporter.versionreporter.sys.version_info'
+    monkeypatch.setattr(mod, (3, 11, 1, 0, 0))
+    monkeypatch.setattr(VersionReporter, '_print_info_on_new_pkgs',
+                        _skip_new_pkgs)
+    reporter = reporter_cls()
+    if use_old:
+        with pytest.warns(DeprecationWarning):
+            reporter.print()
+    else:
+        with warnings.catch_warnings():
+            warnings.simplefilter('error', DeprecationWarning)
+            reporter.print()
+    out, err = capsys.readouterr()
+    assert '' == err
+    assert 'You are running an old Python version.' in out
+
+
+def test_print_out_file(capsys: pytest.CaptureFixture[str],
+                        monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test print() writes to out_file and not to stdout."""
+    monkeypatch.setattr(VersionReporter, '_print_info_on_new_pkgs',
+                        _skip_new_pkgs)
+    buffer = StringIO()
+    versioninfo: VersionInfo = {'Foo': Version('1.2.3')}
+    VersionReporter().print(versioninfo, out_file=buffer)
+    out, err = capsys.readouterr()
+    assert '' == out
+    assert '' == err
+    assert 'Foo  1.2.3' in buffer.getvalue()
+
+
+def test_upgrade_out_file(capsys: pytest.CaptureFixture[str]) -> None:
+    """Test _print_upgrade_info writes to out_file."""
+    buffer = StringIO()
+    versioninfo: VersionInfo = {'aha': Version('0.1')}
+    VersionReporter._print_upgrade_info(versioninfo, out_file=buffer)  # pylint: disable=protected-access # noqa: E501
+    out, err = capsys.readouterr()
+    assert '' == out
+    assert '' == err
+    assert 'install --upgrade aha' in buffer.getvalue()
+
+
+def test_better_out_file(capsys: pytest.CaptureFixture[str]) -> None:
+    """Test _print_if_better_versions writes to out_file."""
+    buffer = StringIO()
+    VersionReporter._print_if_better_versions(PBAVAIL2, out_file=buffer)  # pylint: disable=protected-access # noqa: E501
+    out, err = capsys.readouterr()
+    assert '' == out
+    assert '' == err
+    assert PBTXT2 == buffer.getvalue()
+
+
+def test_check_unsup_out_file(capsys: pytest.CaptureFixture[str],
+                              monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test check_if_unsupported_python writes to out_file."""
+    mod = 'versionreporter.versionreporter.sys.version_info'
+    monkeypatch.setattr(mod, (3, 11, 1, 0, 0))
+
+    class MockToday(VersionReporter):
+        """Reporter with a fixed today after the 3.11 deadline."""
+
+        def _today(self) -> date:
+            """Return a date after the 3.11 support deadline."""
+            return date(year=2025, month=12, day=25)
+    buffer = StringIO()
+    MockToday().check_if_unsupported_python(out_file=buffer)
+    out, err = capsys.readouterr()
+    assert '' == out
+    assert '' == err
+    captured = buffer.getvalue()
+    assert 'You are running an old version of Python:' in captured
+    assert 'install --upgrade ' in captured
+
+
+def test_info_pkgs_out_file(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test _print_info_on_new_pkgs forwards out_file downstream."""
+    seen: list[Optional[TextIO]] = []
+
+    def capture(_: object, vers: _AvailableVersions,
+                out_file: Optional[TextIO] = None) -> None:
+        """Capture the out_file forwarded downstream."""
+        assert vers is not None
+        seen.append(out_file)
+
+    def fake_avail(_: object, versions: VersionInfo) -> _AvailableVersions:
+        """Return an empty availability list without network access."""
+        assert versions is not None
+        return []
+    mod = 'versionreporter.versionreporter.VersionReporter.'
+    monkeypatch.setattr(mod + '_print_if_better_versions', capture)
+    monkeypatch.setattr(mod + '_get_available_versions', fake_avail)
+    buffer = StringIO()
+    inp: VersionInfo = {'Foo': Version('1.0')}
+    VersionReporter()._print_info_on_new_pkgs(inp, out_file=buffer)  # pylint: disable=protected-access # noqa: E501
+    assert seen == [buffer]

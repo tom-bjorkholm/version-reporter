@@ -4,9 +4,10 @@
   * [\_AvailableVersion](#versionreporter.versionreporter._AvailableVersion)
   * [VersionReporter](#versionreporter.versionreporter.VersionReporter)
     * [\_\_init\_\_](#versionreporter.versionreporter.VersionReporter.__init__)
+    * [\_out](#versionreporter.versionreporter.VersionReporter._out)
     * [print](#versionreporter.versionreporter.VersionReporter.print)
     * [check\_if\_unsupported\_python](#versionreporter.versionreporter.VersionReporter.check_if_unsupported_python)
-    * [\_print\_upgrade\_instruction](#versionreporter.versionreporter.VersionReporter._print_upgrade_instruction)
+    * [\_print\_upgrade\_info](#versionreporter.versionreporter.VersionReporter._print_upgrade_info)
     * [\_python\_version](#versionreporter.versionreporter.VersionReporter._python_version)
     * [\_get](#versionreporter.versionreporter.VersionReporter._get)
     * [package\_names](#versionreporter.versionreporter.VersionReporter.package_names)
@@ -17,7 +18,10 @@
     * [\_print\_if\_better\_versions](#versionreporter.versionreporter.VersionReporter._print_if_better_versions)
     * [\_print\_info\_on\_new\_pkgs](#versionreporter.versionreporter.VersionReporter._print_info_on_new_pkgs)
     * [get\_main\_package\_name](#versionreporter.versionreporter.VersionReporter.get_main_package_name)
+    * [recommended\_python](#versionreporter.versionreporter.VersionReporter.recommended_python)
     * [get\_recommended\_python\_version](#versionreporter.versionreporter.VersionReporter.get_recommended_python_version)
+    * [\_deprecated\_overridden](#versionreporter.versionreporter.VersionReporter._deprecated_overridden)
+    * [\_rec\_python](#versionreporter.versionreporter.VersionReporter._rec_python)
 
 <a id="versionreporter.versionreporter"></a>
 
@@ -51,8 +55,8 @@ the application uses. The report also includes information about
 the availability of newer versions of the listed packages.
 
 The application that uses this class shall create a derived class
-and override the methods: `package_names`, `get_app_support_expires`
-`get_recommended_python_version` and `get_main_package_name`
+and override the methods: `package_names`, `get_app_support_expires`,
+`recommended_python` and `get_main_package_name`
 to specify the packages that the application uses, the dates when
 the application will no longer be supported on a given Python
 version, and the recommended Python version for the application.
@@ -75,12 +79,28 @@ def __init__() -> None
 
 Create a version reporter object.
 
+<a id="versionreporter.versionreporter.VersionReporter._out"></a>
+
+#### \_out
+
+```python
+@staticmethod
+def _out(out_file: Optional[TextIO]) -> TextIO
+```
+
+Return the stream to print to (sys.stdout when out_file is None).
+
+The default is resolved here, at call time, rather than as a default
+argument value. This keeps the behaviour correct when sys.stdout is
+replaced at runtime (for example by tests or output redirection).
+
 <a id="versionreporter.versionreporter.VersionReporter.print"></a>
 
 #### print
 
 ```python
-def print(versions: Optional[VersionInfo] = None) -> None
+def print(versions: Optional[VersionInfo] = None,
+          out_file: Optional[TextIO] = None) -> None
 ```
 
 Print version information.
@@ -101,13 +121,17 @@ Python version, information about these is also printed.
 - `versions` - Optional version information to print. If None,
   the version information is obtained from the
   `_get` method.
+- `out_file` - Stream to print to. Defaults to sys.stdout when None,
+  so unchanged client code keeps printing to stdout.
+  Pass a writable stream (such as io.StringIO) to
+  capture the output, for example in a GUI client.
 
 <a id="versionreporter.versionreporter.VersionReporter.check_if_unsupported_python"></a>
 
 #### check\_if\_unsupported\_python
 
 ```python
-def check_if_unsupported_python() -> None
+def check_if_unsupported_python(out_file: Optional[TextIO] = None) -> None
 ```
 
 Check if the Python version is no longer supported by the app.
@@ -117,13 +141,21 @@ by the application and prints an appropriate message to the user.
 The most common usage of this method is to call it early in the
 application program flow.
 
-<a id="versionreporter.versionreporter.VersionReporter._print_upgrade_instruction"></a>
+**Arguments**:
 
-#### \_print\_upgrade\_instruction
+- `out_file` - Stream to print to. Defaults to sys.stdout when None.
+  Pass a writable stream (such as io.StringIO) to
+  capture the output, for example in a GUI client.
+
+<a id="versionreporter.versionreporter.VersionReporter._print_upgrade_info"></a>
+
+#### \_print\_upgrade\_info
 
 ```python
 @classmethod
-def _print_upgrade_instruction(cls, versions: VersionInfo) -> None
+def _print_upgrade_info(cls,
+                        versions: VersionInfo,
+                        out_file: Optional[TextIO] = None) -> None
 ```
 
 Print instructions for how to upgrade Python and the app.
@@ -136,6 +168,7 @@ how to upgrade Python and the application to a newer version.
 **Arguments**:
 
 - `versions` - Version information to print.
+- `out_file` - Stream to print to. Defaults to sys.stdout when None.
 
 <a id="versionreporter.versionreporter.VersionReporter._python_version"></a>
 
@@ -275,7 +308,8 @@ on available versions of the packages in PyPI.
 
 ```python
 @staticmethod
-def _print_if_better_versions(vers: _AvailableVersions) -> None
+def _print_if_better_versions(vers: _AvailableVersions,
+                              out_file: Optional[TextIO] = None) -> None
 ```
 
 Print information if better versions are available.
@@ -289,13 +323,15 @@ application.
 
 - `vers` - List of information on available versions of the packages
   used by the application.
+- `out_file` - Stream to print to. Defaults to sys.stdout when None.
 
 <a id="versionreporter.versionreporter.VersionReporter._print_info_on_new_pkgs"></a>
 
 #### \_print\_info\_on\_new\_pkgs
 
 ```python
-def _print_info_on_new_pkgs(versions: Optional[VersionInfo] = None) -> None
+def _print_info_on_new_pkgs(versions: Optional[VersionInfo] = None,
+                            out_file: Optional[TextIO] = None) -> None
 ```
 
 Print information if better versions are available.
@@ -309,6 +345,7 @@ versions.
 - `versions` - Optional version information about installed packages.
   If None, the version information is obtained from the
   `_get` method.
+- `out_file` - Stream to print to. Defaults to sys.stdout when None.
 
 <a id="versionreporter.versionreporter.VersionReporter.get_main_package_name"></a>
 
@@ -331,6 +368,29 @@ application.
 
 - `str` - Name of the main package (the PyPI project name).
 
+<a id="versionreporter.versionreporter.VersionReporter.recommended_python"></a>
+
+#### recommended\_python
+
+```python
+@classmethod
+def recommended_python(cls) -> Version
+```
+
+Get recommended Python version.
+
+Derived classes should override this method to specify what is
+the recommended Python version for the application. The default
+value is Version('3.14'), which is OK for testing this package,
+but may not make sense for the real application.
+
+This method replaces the longer, now deprecated, method
+`get_recommended_python_version`.
+
+**Returns**:
+
+- `Version` - Recommended Python version.
+
 <a id="versionreporter.versionreporter.VersionReporter.get_recommended_python_version"></a>
 
 #### get\_recommended\_python\_version
@@ -340,14 +400,47 @@ application.
 def get_recommended_python_version(cls) -> Version
 ```
 
-Get recommended Python version.
+Get recommended Python version (deprecated).
 
-Derived classes should override this method to specify what is
-the recommended Python version for the application. The default
-value is Version('3.13'), which is OK for testing this package,
-but may not make sense for the real application.
+.. deprecated::
+Use `recommended_python` instead. This method is kept only for
+backward compatibility. Calling it emits a DeprecationWarning.
+Derived classes that still override this method keep working
+(their value is used and a DeprecationWarning is emitted), but
+they should switch to overriding `recommended_python`.
 
 **Returns**:
 
 - `Version` - Recommended Python version.
+
+<a id="versionreporter.versionreporter.VersionReporter._deprecated_overridden"></a>
+
+#### \_deprecated\_overridden
+
+```python
+@classmethod
+def _deprecated_overridden(cls) -> bool
+```
+
+Return whether a subclass overrides the deprecated method.
+
+Walk the method resolution order and find the class that defines
+`get_recommended_python_version`. When that class is a subclass of
+VersionReporter rather than VersionReporter itself, a derived class
+still overrides the deprecated method.
+
+<a id="versionreporter.versionreporter.VersionReporter._rec_python"></a>
+
+#### \_rec\_python
+
+```python
+@classmethod
+def _rec_python(cls) -> Version
+```
+
+Resolve the recommended Python version for internal use.
+
+Honor a deprecated `get_recommended_python_version` override when a
+derived class still provides one, emitting a DeprecationWarning and
+using its value. Otherwise use `recommended_python`.
 

@@ -44,7 +44,7 @@ class MinimalHelloVersionReporter(VersionReporter):
         return 'build'
 
     @classmethod
-    def get_recommended_python_version(cls) -> Version:
+    def recommended_python(cls) -> Version:
         """Return the Python version this example recommends."""
         return Version('3.13')
 
