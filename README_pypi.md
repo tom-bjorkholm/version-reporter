@@ -50,17 +50,11 @@ You can find the protected API documentation at [https://bitbucket.org/tom-bjork
 Even though the API documentation exists, most users and programmers probably
 get a better start by reading the examples.
 
-## Version history
-
-| Version | Date        | Python version | Comment                     |
-|---------|-------------|----------------|-----------------------------|
-| 0.1     | 2026 Apr 08 | 3.12 or newer  | First released version      |
-
 ## Test summary
 
-- Test result: 247 passed in 6s
+- Test result: 247 passed in 7s
 - No flake8 warnings.
 - No mypy errors found.
 - No python layout warnings.
-- Built version(s): 0.3
+- Built version(s): 0.3.1
 - Build and test using Python 3.14.6
