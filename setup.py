@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
   name='versionreporter',
-  version='0.2.1',
+  version='0.3',
   description='Report versions on main packages used in program.',
   author='Tom Björkholm',
   author_email='klausuler_linnet0q@icloud.com',
@@ -13,11 +13,7 @@ setup(
   packages=['versionreporter'],
   package_dir={'versionreporter': 'src/versionreporter'},
   package_data={'versionreporter': ['py.typed']},
-  install_requires=[  # pylint: disable=duplicate-code
-    'pip >= 26.0.1',
-    'setuptools >= 82.0.1',
-    'build >= 1.4.2',
-    'wheel >= 0.46.3',
+  install_requires=[
     'pypi-simple >= 1.8.0',
     'packaging >= 25.0',
     'requests >= 2.32.5',

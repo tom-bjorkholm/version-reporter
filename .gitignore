@@ -1,5 +1,6 @@
 .gitignore.bak
 ./venv
+.vscode/*
 venv/*
 dist/*
 build/*
@@ -22,6 +23,7 @@ __pycache__
 .claude/*
 .claudeignore
 AGENTS.md
+CLAUDE.md
 non_cursor_AGENTS.md
 *.docx
 *.odt

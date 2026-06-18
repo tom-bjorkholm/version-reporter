@@ -207,8 +207,7 @@ class VersionReporter():
         return date.today()
 
     @staticmethod
-    def _get_available_version(pkgname: str,
-                               pkgversion: Version,
+    def _get_available_version(pkgname: str, pkgversion: Version,
                                python_version: Version) -> _AvailableVersion:
         """Get information on available versions in PyPI.
 

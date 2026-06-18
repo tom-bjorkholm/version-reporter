@@ -15,27 +15,22 @@ from example.hello_world_support_check import \
 from versionreporter import VersionReporter
 
 
+type _Timeout = Optional[float | tuple[float, float]]
+
+
 def _distribution_package(project: str, version: str) -> DistributionPackage:
     """Create one fake package entry returned from the PyPI client."""
-    return DistributionPackage(
-        filename=f'{project}-{version}.whl',
-        url='',
-        project=project,
-        version=version,
-        package_type='wheel',
-        digests={},
-        requires_python='>= 3.0',
-        has_sig=False,
-        is_yanked=False
-    )
+    return DistributionPackage(filename=f'{project}-{version}.whl', url='',
+                               project=project, version=version,
+                               package_type='wheel', digests={},
+                               requires_python='>= 3.0', has_sig=False,
+                               is_yanked=False)
 
 
-def _mock_get_project_page(
-        _: object,
-        project: str,
-        timeout: Optional[float | tuple[float, float]] = None,
-        accept: Optional[str] = None,
-        headers: Optional[dict[str, str]] = None) -> ProjectPage:
+def _mock_get_project_page(_: object, project: str, timeout: _Timeout = None,
+                           accept: Optional[str] = None,
+                           headers: Optional[dict[str, str]] = None) \
+        -> ProjectPage:
     """Return a fake project page that always advertises a newer version."""
     assert timeout is not None
     assert accept is None
@@ -49,8 +44,7 @@ def _patch_pypi_lookup(monkeypatch: pytest.MonkeyPatch) -> None:
     """Patch the low-level PyPI lookup used by VersionReporter."""
     monkeypatch.setattr(
         'versionreporter.versionreporter.PyPISimple.get_project_page',
-        _mock_get_project_page
-    )
+        _mock_get_project_page)
 
 
 @pytest.mark.parametrize('main_function, argv, text',
@@ -59,8 +53,7 @@ def _patch_pypi_lookup(monkeypatch: pytest.MonkeyPatch) -> None:
                            'Hello, reader!')])
 def test_example_programs_normal_flow(
         capsys: pytest.CaptureFixture[str],
-        main_function: Callable[[Optional[list[str]]], int],
-        argv: list[str],
+        main_function: Callable[[Optional[list[str]]], int], argv: list[str],
         text: str) -> None:
     """Test the normal non-version flow of the example programs."""
     assert 0 == main_function(argv)
@@ -74,8 +67,7 @@ def test_example_programs_normal_flow(
                          [(minimal_main, 'build'),
                           (support_main, 'requests')])
 def test_example_programs_report_newer_versions(
-        monkeypatch: pytest.MonkeyPatch,
-        capsys: pytest.CaptureFixture[str],
+        monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
         main_function: Callable[[Optional[list[str]]], int],
         main_package: str) -> None:
     """Test that the examples report newer package versions."""
@@ -100,8 +92,7 @@ def test_support_aware_example_reports_unsupported_python(
 
     monkeypatch.setattr('versionreporter.versionreporter.sys.version_info',
                         (3, 12, 9, 0, 0))
-    monkeypatch.setattr(SupportAwareHelloVersionReporter, '_today',
-                        mock_today)
+    monkeypatch.setattr(SupportAwareHelloVersionReporter, '_today', mock_today)
     assert 0 == support_main(['--name', 'reader'])
     out, err = capsys.readouterr()
     assert '' == err

@@ -51,21 +51,13 @@ class MinimalHelloVersionReporter(VersionReporter):
 
 def version_requested(argv: Optional[list[str]] = None) -> bool:
     """Return whether the command line requested version information."""
-    parser = argparse.ArgumentParser(
-        prog='hello_world_minimal',
-        description='Minimal hello world example using VersionReporter.'
-    )
-    # argparse has a built-in 'version' action, but that action only prints
-    # one prepared string. VersionReporter prints a richer multi-line report,
-    # so the example keeps --version as a normal flag and calls print()
-    # explicitly after parsing.
-    parser.add_argument(
-        '--version',
-        dest='show_version',
-        default=False,
-        action='store_true',
-        help='Show the VersionReporter table instead of the hello message.'
-    )
+    desc = 'Minimal hello world example using VersionReporter.'
+    parser = argparse.ArgumentParser(prog='hello_world_minimal',
+                                     description=desc)
+    help_text = 'Show the VersionReporter table instead of the ' \
+                'hello message.'
+    parser.add_argument('--version', dest='show_version', default=False,
+                        action='store_true', help=help_text)
     parsed_arguments = parser.parse_args(argv)
     return bool(parsed_arguments.show_version)
 

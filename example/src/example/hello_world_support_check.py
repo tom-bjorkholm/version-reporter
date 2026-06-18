@@ -48,19 +48,12 @@ class SupportAwareHelloVersionReporter(VersionReporter):
 
 def build_argument_parser() -> argparse.ArgumentParser:
     """Create the argument parser for the support-aware example."""
-    parser = argparse.ArgumentParser(
-        description='Hello world example using VersionReporter.'
-    )
-    parser.add_argument(
-        '--name',
-        default='world',
-        help='Name to greet when not printing version information.'
-    )
-    parser.add_argument(
-        '--version',
-        action='store_true',
-        help='Print application and dependency version information.'
-    )
+    desc = 'Hello world example using VersionReporter.'
+    parser = argparse.ArgumentParser(description=desc)
+    help_text = 'Name to greet when not printing version information.'
+    parser.add_argument('--name', default='world', help=help_text)
+    help_text = 'Print application and dependency version information.'
+    parser.add_argument('--version', action='store_true', help=help_text)
     return parser
 
 

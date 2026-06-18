@@ -25,8 +25,8 @@ from versionreporter.versionreporter import VersionInfo, \
                           ])
 @pytest.mark.parametrize('asarg, usearg', [[True, False], [True, False]])
 def test_version_print1(capsys: pytest.CaptureFixture[str],
-                        data: dict[str, str], texts: list[str],
-                        asarg: bool, usearg: bool) -> None:
+                        data: dict[str, str], texts: list[str], asarg: bool,
+                        usearg: bool) -> None:
     """Test VersionReporter.print."""
     class Derived(VersionReporter):
         """Derived class for fake get method."""
@@ -83,8 +83,8 @@ def test_version_print2(capsys: pytest.CaptureFixture[str],
                                   ['4.5', '2.7', '4.5', '1.9.0']])
 @pytest.mark.parametrize('pyt', [[3, 10, 7], [3, 13, 1]])
 def test_version_get1(monkeypatch: pytest.MonkeyPatch,
-                      capsys: pytest.CaptureFixture[str],
-                      vers: list[str], pyt: list[int]) -> None:
+                      capsys: pytest.CaptureFixture[str], vers: list[str],
+                      pyt: list[int]) -> None:
     """Test VersionReporter.get with patched getters."""
     metaversnum = 0
 
@@ -147,8 +147,8 @@ def test_version_get2(monkeypatch: pytest.MonkeyPatch,
                           ('linux', 'pip3'),
                           ('darwin', 'pip3')])
 def test_print_upgrade(capsys: pytest.CaptureFixture[str],
-                       monkeypatch: pytest.MonkeyPatch,
-                       operatingsys: str, pip: str) -> None:
+                       monkeypatch: pytest.MonkeyPatch, operatingsys: str,
+                       pip: str) -> None:
     """Test _print_upgrade_instructions."""
     mod = 'versionreporter.versionreporter.sys.platform'
     monkeypatch.setattr(mod, operatingsys)
@@ -188,8 +188,8 @@ def test_version_print_old_p(capsys: pytest.CaptureFixture[str],
                            date(year=2027, month=12, day=25), True)])
 def test_version_check_if_u(capsys: pytest.CaptureFixture[str],
                             monkeypatch: pytest.MonkeyPatch,
-                            ver: tuple[int, int, int, int, int],
-                            dat: date, errprint: bool) -> None:
+                            ver: tuple[int, int, int, int, int], dat: date,
+                            errprint: bool) -> None:
     """Test version check if unsupported Python with old Python."""
     mod = 'versionreporter.versionreporter.sys.version_info'
     monkeypatch.setattr(mod, ver)
@@ -223,8 +223,7 @@ def test_version_check_if_u(capsys: pytest.CaptureFixture[str],
                           ((3, 10, 5, 0, 0), '3.10.5')])
 def test_python_version(capsys: pytest.CaptureFixture[str],
                         monkeypatch: pytest.MonkeyPatch,
-                        ver: tuple[int, int, int, int, int],
-                        res: str) -> None:
+                        ver: tuple[int, int, int, int, int], res: str) -> None:
     """Test VersionsInformation.python_version."""
     mod = 'versionreporter.versionreporter.sys.version_info'
     monkeypatch.setattr(mod, ver)
@@ -264,8 +263,7 @@ def mocked_get_project_page(_: object, project: str,
         raise NoSuchProjectError(project=project, url='')
     mockvals: PageReturn = pagereturns.pop()
     for mockret in mockvals:
-        packages.append(DistributionPackage(filename=f'{project}.whl',
-                                            url='',
+        packages.append(DistributionPackage(filename=f'{project}.whl', url='',
                                             project=project,
                                             package_type='wheel',
                                             version=mockret.version,
@@ -346,9 +344,8 @@ def mocked_get_project_page(_: object, project: str,
                                              pkgname='def'))])
 def test_get_avail_version(capsys: pytest.CaptureFixture[str],  # pylint: disable=too-many-arguments,too-many-positional-arguments) # noqa: E501
                            monkeypatch: pytest.MonkeyPatch,
-                           page: list[MockReturn], name: str,
-                           ver: str, pyver: str,
-                           res: _AvailableVersion) -> None:
+                           page: list[MockReturn], name: str, ver: str,
+                           pyver: str, res: _AvailableVersion) -> None:
     """Test VersionReporter.get_available_version."""
     global pagereturns  # pylint: disable=global-statement
     pagereturns = [page]
@@ -366,13 +363,12 @@ def test_get_avail_version(capsys: pytest.CaptureFixture[str],  # pylint: disabl
     assert '' == err
 
 
-def mock_get_available_version(pkgname: str,
-                               pkgversion: Version,
-                               python_version: Version) -> _AvailableVersion:
+def mock_get_avail_vers(pkgname: str, pkgversion: Version,
+                        python_version: Version) -> _AvailableVersion:
     """Get information on available versions in PyPI."""
     assert pkgversion is not None
     assert python_version is not None
-    for ans in mock_get_available_version_answers:
+    for ans in mock_get_avail_vers_ans:
         if ans.pkgname == pkgname:
             return ans
     return _AvailableVersion(pkgname=pkgname, is_best_for_new_py=False,
@@ -381,7 +377,7 @@ def mock_get_available_version(pkgname: str,
                              better_ver=Version('0.0'))
 
 
-mock_get_available_version_answers: _AvailableVersions = []
+mock_get_avail_vers_ans: _AvailableVersions = []
 
 
 @pytest.mark.parametrize('inp,ans,res',
@@ -448,10 +444,9 @@ def test_get_available_versions(capsys: pytest.CaptureFixture[str],
                                 res: _AvailableVersions) -> None:
     """Test VersionReporter.get_available_versions."""
     mod = 'versionreporter.versionreporter.VersionReporter.'
-    monkeypatch.setattr(mod + '_get_available_version',
-                        mock_get_available_version)
-    global mock_get_available_version_answers  # pylint: disable=global-statement # noqa: E501
-    mock_get_available_version_answers = deepcopy(ans)
+    monkeypatch.setattr(mod + '_get_available_version', mock_get_avail_vers)
+    global mock_get_avail_vers_ans  # pylint: disable=global-statement # noqa: E501
+    mock_get_avail_vers_ans = deepcopy(ans)
     vers = VersionReporter()
     ret = vers._get_available_versions(inp)  # pylint: disable=protected-access
     out, err = capsys.readouterr()
@@ -462,17 +457,17 @@ def test_get_available_versions(capsys: pytest.CaptureFixture[str],
 
 PBAVAIL1: _AvailableVersions = [
     _AvailableVersion(pkgname='abc', is_best_for_new_py=False,
-                      is_better_for_pyver=False,
-                      best_ver=Version('1.0'), better_ver=Version('1.0'))
+                      is_better_for_pyver=False, best_ver=Version('1.0'),
+                      better_ver=Version('1.0'))
 ]
 PBTXT1 = ''
 PBAVAIL2: _AvailableVersions = [
     _AvailableVersion(pkgname='abc', is_best_for_new_py=False,
-                      is_better_for_pyver=True,
-                      best_ver=Version('2.0'), better_ver=Version('2.0')),
+                      is_better_for_pyver=True, best_ver=Version('2.0'),
+                      better_ver=Version('2.0')),
     _AvailableVersion(pkgname='longer_name', is_best_for_new_py=True,
-                      is_better_for_pyver=False,
-                      best_ver=Version('10.0'), better_ver=Version('1.0'))
+                      is_better_for_pyver=False, best_ver=Version('10.0'),
+                      better_ver=Version('1.0'))
 ]
 PBTXT2 = '''Upgraded packages are available for this Python version:
 abc ........ 2.0
@@ -481,11 +476,11 @@ longer_name  10.0
 '''
 PBAVAIL3: _AvailableVersions = [
     _AvailableVersion(pkgname='abc', is_best_for_new_py=True,
-                      is_better_for_pyver=True,
-                      best_ver=Version('2.1'), better_ver=Version('2.0')),
+                      is_better_for_pyver=True, best_ver=Version('2.1'),
+                      better_ver=Version('2.0')),
     _AvailableVersion(pkgname='longer_name', is_best_for_new_py=True,
-                      is_better_for_pyver=True,
-                      best_ver=Version('10.0'), better_ver=Version('1.0'))
+                      is_better_for_pyver=True, best_ver=Version('10.0'),
+                      better_ver=Version('1.0'))
 ]
 PBTXT3 = '''Upgraded packages are available for this Python version:
 abc ........ 2.0
@@ -538,8 +533,7 @@ def test_print_info_on_new_1(capsys: pytest.CaptureFixture[str],
         assert vers[0].pkgname == 'versionreporter'
 
     mod = 'versionreporter.versionreporter.VersionReporter.'
-    monkeypatch.setattr(mod + '_get_available_versions',
-                        mock_get_avail)
+    monkeypatch.setattr(mod + '_get_available_versions', mock_get_avail)
     monkeypatch.setattr(mod + '_print_if_better_versions',
                         mock_print_if_better)
     vers = VersionReporter()

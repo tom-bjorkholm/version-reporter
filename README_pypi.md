@@ -58,8 +58,9 @@ get a better start by reading the examples.
 
 ## Test summary
 
-- Test result: 197 passed in 7s
+- Test result: 235 passed in 7s
 - No flake8 warnings.
 - No mypy errors found.
-- Built version(s): 0.2.1
-- Build and test using Python 3.14.3
+- No python layout warnings.
+- Built version(s): 0.3
+- Build and test using Python 3.14.6
