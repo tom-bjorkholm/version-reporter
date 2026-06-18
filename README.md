@@ -97,9 +97,9 @@ information about the build system. This README can also be viewed at
 
 ## Test summary
 
-- Test result: 247 passed in 7s
+- Test result: 247 passed in 11s
 - No flake8 warnings.
 - No mypy errors found.
 - No python layout warnings.
 - Built version(s): 0.3
-- Build and test using Python 3.14.6
+- Build and test using Python 3.12.6
