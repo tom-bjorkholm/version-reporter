@@ -33,7 +33,7 @@ entered on the command line of the application.
 The version-reporter repo uses submodules. To clone it use the command:
 
 ````sh
-git clone --recurse-submodules git@bitbucket.org:tom-bjorkholm/version-reporter.git
+git clone --recurse-submodules git@github.com:tom-bjorkholm/version-reporter.git
 ````
 
 If you forgot to include the `--recurse-submodules` in your `git clone` command
@@ -93,11 +93,11 @@ reports.
 
 The file `./common_build_tools/README.md` (in git submodule - see above) contains more
 information about the build system. This README can also be viewed at
-[https://bitbucket.org/tom-bjorkholm/common_build_tools/src/master/README.md](https://bitbucket.org/tom-bjorkholm/common_build_tools/src/master/README.md)
+[https://github.com/tom-bjorkholm/common_build_tools/blob/master/README.md](https://github.com/tom-bjorkholm/common_build_tools/blob/master/README.md)
 
 ## Test summary
 
-- Test result: 247 passed in 7s
+- Test result: 247 passed in 8s
 - No flake8 warnings.
 - No mypy errors found.
 - No python layout warnings.

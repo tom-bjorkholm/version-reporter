@@ -11,9 +11,9 @@ That is necessary because these example scripts are not themselves published
 packages, while `VersionReporter` can only report installed package versions
 and query PyPI for newer releases of real PyPI project names.
 
-- [`hello_world_minimal.py`](https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/example/src/example/hello_world_minimal.py)
+- [`hello_world_minimal.py`](https://github.com/tom-bjorkholm/version-reporter/blob/master/example/src/example/hello_world_minimal.py)
   shows the smallest useful pattern: subclass `VersionReporter`, wire
   `--version` through `argparse`, and print a version report.
-- [`hello_world_support_check.py`](https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/example/src/example/hello_world_support_check.py)
+- [`hello_world_support_check.py`](https://github.com/tom-bjorkholm/version-reporter/blob/master/example/src/example/hello_world_support_check.py)
   builds on the first example by also calling
   `check_if_unsupported_python()` early in `main()`.

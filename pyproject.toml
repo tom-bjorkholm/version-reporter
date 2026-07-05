@@ -28,7 +28,7 @@ classifiers = [
 dynamic = ["dependencies"]
 
 [project.urls]
-"Source code" = "https://bitbucket.org/tom-bjorkholm/version-reporter"
+"Source code" = "https://github.com/tom-bjorkholm/version-reporter"
 
 [tool.pytest.ini_options]
 pythonpath = [

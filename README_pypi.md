@@ -39,20 +39,20 @@ pip install --upgrade versionreporter
 
 The best way to learn to use this package is to use the provided
 example programs:
-[https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/example/src/example/README.md](https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/example/src/example/README.md).
+[https://github.com/tom-bjorkholm/version-reporter/blob/master/example/src/example/README.md](https://github.com/tom-bjorkholm/version-reporter/blob/master/example/src/example/README.md).
 
 ## API documentation
 
-You can find the public API documentation at [https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/doc/api.md](https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/doc/api.md)
+You can find the public API documentation at [https://github.com/tom-bjorkholm/version-reporter/blob/master/doc/api.md](https://github.com/tom-bjorkholm/version-reporter/blob/master/doc/api.md)
 
-You can find the protected API documentation at [https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/doc/protected_api.md](https://bitbucket.org/tom-bjorkholm/version-reporter/src/master/doc/protected_api.md)
+You can find the protected API documentation at [https://github.com/tom-bjorkholm/version-reporter/blob/master/doc/protected_api.md](https://github.com/tom-bjorkholm/version-reporter/blob/master/doc/protected_api.md)
 
 Even though the API documentation exists, most users and programmers probably
 get a better start by reading the examples.
 
 ## Test summary
 
-- Test result: 247 passed in 7s
+- Test result: 247 passed in 8s
 - No flake8 warnings.
 - No mypy errors found.
 - No python layout warnings.
