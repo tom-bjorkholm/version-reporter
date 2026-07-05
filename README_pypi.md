@@ -56,5 +56,5 @@ get a better start by reading the examples.
 - No flake8 warnings.
 - No mypy errors found.
 - No python layout warnings.
-- Built version(s): 0.3.1
+- Built version(s): 0.4
 - Build and test using Python 3.14.6
