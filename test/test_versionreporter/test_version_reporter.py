@@ -619,14 +619,14 @@ def _skip_new_pkgs(_: object, versions: Optional[VersionInfo] = None,
 
 
 def test_recommended_python() -> None:
-    """Test the default recommended_python returns Version('3.13')."""
+    """Test the default recommended_python returns Version('3.15')."""
     with warnings.catch_warnings():
         warnings.simplefilter('error', DeprecationWarning)
-        assert VersionReporter.recommended_python() == Version('3.14')
+        assert VersionReporter.recommended_python() == Version('3.15')
 
 
 @pytest.mark.parametrize('reporter_cls, expected',
-                         [(VersionReporter, '3.14'),
+                         [(VersionReporter, '3.15'),
                           (NewRecReporter, '3.99')])
 def test_rec_py_resolver(reporter_cls: type[VersionReporter],
                          expected: str) -> None:
@@ -649,7 +649,7 @@ def test_deprecated_direct() -> None:
     """Test the deprecated method warns and delegates to the new one."""
     with pytest.warns(DeprecationWarning):
         result = VersionReporter.get_recommended_python_version()
-    assert result == Version('3.14')
+    assert result == Version('3.15')
 
 
 @pytest.mark.parametrize('reporter_cls, use_old',

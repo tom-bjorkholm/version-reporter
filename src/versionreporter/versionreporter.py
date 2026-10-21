@@ -222,9 +222,10 @@ class VersionReporter():
         dict[date, str]: Mapping from support-end dates to the highest
                          unsupported Python major.minor version.
         """
-        support_end = {date(year=2025, month=10, day=1): '3.10',
-                       date(year=2025, month=12, day=1): '3.11',
-                       date(year=2026, month=3, day=1): '3.12'}
+        support_end = {date(year=2025, month=11, day=1): '3.11',
+                       date(year=2027, month=3, day=1): '3.12',
+                       date(year=2027, month=11, day=1): '3.13',
+                       date(year=2028, month=11, day=1): '3.14'}
         return support_end
 
     def _today(self) -> date:
@@ -403,7 +404,7 @@ class VersionReporter():
         Returns:
             Version: Recommended Python version.
         """
-        return Version('3.14')
+        return Version('3.15')
 
     @classmethod
     def get_recommended_python_version(cls) -> Version:

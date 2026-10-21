@@ -15,8 +15,8 @@ setup(
   package_data={'versionreporter': ['py.typed']},
   install_requires=[
     'pypi-simple >= 1.8.0',
-    'packaging >= 25.0',
-    'requests >= 2.32.5',
-    'types-requests >= 2.32.4.20250913',
+    'packaging >= 26.3',
+    'requests >= 2.34.2',
+    'types-requests >= 2.33.0.20261006',
   ]
 )

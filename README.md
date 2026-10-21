@@ -102,4 +102,4 @@ information about the build system. This README can also be viewed at
 - No mypy errors found.
 - No python layout warnings.
 - Built version(s): 0.4.1
-- Build and test using Python 3.14.6
+- Build and test using Python 3.15.0

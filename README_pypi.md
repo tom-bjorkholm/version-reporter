@@ -56,4 +56,4 @@ get a better start by reading the examples.
 - No mypy errors found.
 - No python layout warnings.
 - Built version(s): 0.4.1
-- Build and test using Python 3.14.6
+- Build and test using Python 3.15.0
