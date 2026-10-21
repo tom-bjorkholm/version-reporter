@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
   name='versionreporter',
-  version='0.5',
+  version='0.5.1',
   description='Report versions on main packages used in program.',
   author='Tom Björkholm',
   author_email='klausuler_linnet0q@icloud.com',
