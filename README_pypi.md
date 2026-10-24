@@ -51,10 +51,10 @@ get a better start by reading the examples.
 
 ## Test summary
 
-- Test result: 215 passed in 5s
+- Test result: 255 passed in 5s
 - No flake8 warnings.
 - No mypy errors found.
 - No pylint warnings.
 - No python layout warnings.
 - Built version(s): 0.5.1
-- Build and test using Python 3.15.0
+- Build and test using Python 3.15.1
