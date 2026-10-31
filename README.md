@@ -97,7 +97,7 @@ information about the build system. This README can also be viewed at
 
 ## Test summary
 
-- Test result: 255 passed in 5s
+- Test result: 261 passed in 5s
 - No flake8 warnings.
 - No mypy errors found.
 - No pylint warnings.
