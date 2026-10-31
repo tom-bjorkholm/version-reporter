@@ -1,4 +1,4 @@
-name: CI
+name: CI linux
 
 on:
   push:
@@ -59,14 +59,14 @@ jobs:
 
   cleanup-runs:
     needs: build-and-test
-    runs-on: macos-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Keep last 3 success, keep newer failures
+      - name: Keep last 1 success, keep newer failures
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          WORKFLOW_ID: main.yml
-          KEEP_SUCCESS: "3"
+          WORKFLOW_ID: main-linux.yml
+          KEEP_SUCCESS: "1"
         run: |
           set -euo pipefail
 
